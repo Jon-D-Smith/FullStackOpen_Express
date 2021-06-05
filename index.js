@@ -2,8 +2,35 @@ const express = require('express')
 const app = express()
 const PORT = 3001
 
+const persons = [
+    {
+        id: 1,
+        name: 'Jon Smith',
+        number: "817-879-0614"
+    },
+    {
+        id: 2,
+        name: 'Reagann Smith',
+        number: "817-905-4265"
+    },
+    {
+        id: 3,
+        name: 'BlueBelle',
+        number: "817-879-0614"
+    },
+    {
+        id: 4,
+        name: 'Emergency Contact',
+        number: "911"
+    },
+]
+
 app.get('/', (req, res) => {
     res.send('Hello world')
+})
+
+app.get('/api/persons', (req, res) => {
+    res.json(persons)
 })
 
 app.listen(PORT, () => {
