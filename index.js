@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const PORT = 3001
+const morgan = require('morgan')
 
 let persons = [
     {
@@ -25,7 +26,10 @@ let persons = [
     },
 ]
 
+
+
 app.use(express.json())
+app.use(morgan('tiny'))
 
 app.get('/', (req, res) => {
     res.send('Hello world')
