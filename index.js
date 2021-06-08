@@ -3,6 +3,7 @@ const app = express()
 const PORT = process.env.PORT || 3001
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 
 let persons = [
     {
