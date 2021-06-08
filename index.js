@@ -5,31 +5,8 @@ const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
 
-let persons = [
-    {
-        id: 1,
-        name: 'Jon Smith',
-        number: "817-879-0614"
-    },
-    {
-        id: 2,
-        name: 'Reagann Smith',
-        number: "817-905-4265"
-    },
-    {
-        id: 3,
-        name: 'BlueBelle',
-        number: "817-879-0614"
-    },
-    {
-        id: 4,
-        name: 'Emergency Contact',
-        number: "911"
-    },
-]
 
-
-
+// Middleware
 app.use(express.json())
 app.use(morgan('tiny'))
 app.use(cors())
@@ -42,7 +19,10 @@ app.get('/', (req, res) => {
 // Get All Persons
 
 app.get('/api/persons', (req, res) => {
-    res.json(persons)
+    const people = Person.find({}).then(people=> {
+        res.json(people)
+    })
+    
 })
 
 // Get individual person
@@ -84,19 +64,12 @@ app.post('/api/persons', (req, res) => {
 
     }
 
-    if(persons.find(person => person.name === name)){
-        return res.status(400).json({
-            error : "Name must be unique"
-        })
-    }
-
-    const person = {
+    const person = new Person({
         name,
-        number,
-        id: generateId()
-    }
-
-    persons = persons.concat(person)
+        number   
+    })
+    
+    person.save()
     res.json(person)
 })
 
