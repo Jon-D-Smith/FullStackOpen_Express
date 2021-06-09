@@ -6,12 +6,24 @@ const cors = require('cors')
 const Person = require('./models/person')
 const { response } = require('express')
 
+// Error handling
+const errorHandler = (err, req, res, next) => {
+    console.error(err.message)
+  
+    if (err.name === 'CastError') {
+      return res.status(400).send({ error: 'malformatted id' })
+    } 
+  
+    next(err)
+  }
+
 
 // Middleware
 app.use(express.json())
 app.use(morgan('tiny'))
 app.use(cors())
 app.use(express.static('build'))
+app.use(errorHandler)
 
 app.get('/', (req, res) => {
     res.send('Hello world')
