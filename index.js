@@ -4,6 +4,7 @@ const PORT = process.env.PORT || 3001
 const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
+const { response } = require('express')
 
 
 // Middleware
@@ -40,10 +41,13 @@ app.get('/api/persons/:id', (req, res) => {
 
 // Delete Person
 
-app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    persons = persons.filter(person => person.id !== id)
-    res.status(204).end()
+app.delete('/api/persons/:id', (req, res, next) => {
+    const id = req.params.id
+    Person.findByIdAndUpdate(id)
+          .then(result => {
+              response.status(204).end()
+          })
+          .catch(err => next(err))
 })
 
 // Generate ID and add person
