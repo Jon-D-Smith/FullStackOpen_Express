@@ -55,9 +55,10 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.delete('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
-    Person.findByIdAndUpdate(id)
+    console.log(id)
+    Person.findByIdAndRemove(id)
           .then(result => {
-              response.status(204).end()
+              res.status(204).end()
           })
           .catch(err => next(err))
 })
@@ -87,6 +88,21 @@ app.post('/api/persons', (req, res) => {
     
     person.save()
     res.json(person)
+})
+
+app.put('/api/persons/:id', (req, res, next) => {
+    const id = req.params.id
+    const { name, number} = req.body
+    const person = {
+        name,
+        number
+    }
+    
+    Person.findByIdAndUpdate(id, person, {new:true})
+          .then(updatedPerson => {
+              res.json(updatedPerson)
+          })
+          .catch(err => next(err))
 })
 
 app.get('/info', (req, res) => {
