@@ -4,17 +4,17 @@ const PORT = process.env.PORT || 3001
 const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
-const { response } = require('express')
+
 
 // Error handling
-const errorHandler = (err, req, res, next) => {
-    console.error(err.message)
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
   
-    if (err.name === 'CastError') {
-      return res.status(400).send({ error: 'malformatted id' })
+    if (error.name === 'CastError') {
+      return response.status(400).send({ error: 'malformatted id' })
     } 
   
-    next(err)
+    next(error)
   }
 
 
@@ -40,14 +40,11 @@ app.get('/api/persons', (req, res) => {
 
 // Get individual person
 
-app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(person => person.id === id)
-    if(person){
-        res.send(person)
-    } else {
-        res.status(404).end()
-    }
+app.get('/api/persons/:id', (req, res, next) => {
+    const id = req.params.id
+    Person.findById(id)
+          .then(person => res.json(person))
+          .catch(error => next(error))
     
 })
 
@@ -60,16 +57,9 @@ app.delete('/api/persons/:id', (req, res, next) => {
           .then(result => {
               res.status(204).end()
           })
-          .catch(err => next(err))
+          .catch(error => next(error))
 })
 
-// Generate ID and add person
-
-const generateId = () => {
-    const maxId = persons.length > 0 ? Math.max(...persons.map(person => person.id)) : 0
-
-    return maxId + 1
-}
 
 app.post('/api/persons', (req, res) => {
     const {name, number} = req.body
@@ -102,12 +92,14 @@ app.put('/api/persons/:id', (req, res, next) => {
           .then(updatedPerson => {
               res.json(updatedPerson)
           })
-          .catch(err => next(err))
+          .catch(error => next(error))
 })
 
 app.get('/info', (req, res) => {
     const date = new Date(Date.now())
-    res.send(`<p>Phonebook has info for ${persons.length} people</p> <p>${date}</p>`)
+    Person.find({})
+          .then(people => res.send(`<p>Phonebook has info for ${people.length} people</p> <p>${date}</p>`))
+    
 })
 
 
