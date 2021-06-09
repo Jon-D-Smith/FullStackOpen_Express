@@ -12,7 +12,9 @@ const errorHandler = (error, request, response, next) => {
   
     if (error.name === 'CastError') {
       return response.status(400).send({ error: 'malformatted id' })
-    } 
+    } else if(error.name === 'ValidationError'){
+        return response.status(400).json({ error: error.message })
+    }
   
     next(error)
   }
@@ -23,8 +25,8 @@ app.use(express.json())
 app.use(morgan('tiny'))
 app.use(cors())
 app.use(express.static('build'))
-app.use(errorHandler)
 
+app.use(errorHandler)
 app.get('/', (req, res) => {
     res.send('Hello world')
 })
@@ -61,7 +63,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
 })
 
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     const {name, number} = req.body
 
     if(!name || !number) {
@@ -77,6 +79,8 @@ app.post('/api/persons', (req, res) => {
     })
     
     person.save()
+    .then()
+    .catch(error => next(error))
     res.json(person)
 })
 
