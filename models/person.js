@@ -9,9 +9,13 @@ const personSchema = new mongoose.Schema({
     name: {
       type: String,
       unique: true,
-      required: true
+      required: true,
+      minLength: 3
     },
-    number: String
+    number: {
+      type: String,
+      minLength: 8
+    }
     
 })
 
