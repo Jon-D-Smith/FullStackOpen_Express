@@ -6,6 +6,15 @@ const cors = require('cors')
 const Person = require('./models/person')
 
 
+
+
+
+// Middleware
+app.use(express.json())
+app.use(morgan('tiny'))
+app.use(cors())
+app.use(express.static('build'))
+
 // Error handling
 const errorHandler = (error, request, response, next) => {
     console.error(error.message)
@@ -18,13 +27,6 @@ const errorHandler = (error, request, response, next) => {
   
     next(error)
   }
-
-
-// Middleware
-app.use(express.json())
-app.use(morgan('tiny'))
-app.use(cors())
-app.use(express.static('build'))
 
 app.use(errorHandler)
 app.get('/', (req, res) => {
@@ -79,9 +81,9 @@ app.post('/api/persons', (req, res, next) => {
     })
     
     person.save()
-    .then()
+    .then(res.json(person))
     .catch(error => next(error))
-    res.json(person)
+    
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
