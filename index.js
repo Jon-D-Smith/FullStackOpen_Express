@@ -20,13 +20,13 @@ const errorHandler = (error, request, response, next) => {
     console.error(error.message)
   
     if (error.name === 'CastError') {
-      return response.status(400).send({ error: 'malformatted id' })
+        return response.status(400).send({ error: 'malformatted id' })
     } else if(error.name === 'ValidationError'){
         return response.status(400).json({ error: error.message })
     }
   
     next(error)
-  }
+}
 
 app.use(errorHandler)
 app.get('/', (req, res) => {
@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
 // Get All Persons
 
 app.get('/api/persons', (req, res) => {
-    const people = Person.find({}).then(people=> {
+    Person.find({}).then(people=> {
         res.json(people)
     })
     
@@ -47,8 +47,8 @@ app.get('/api/persons', (req, res) => {
 app.get('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
     Person.findById(id)
-          .then(person => res.json(person))
-          .catch(error => next(error))
+        .then(person => res.json(person))
+        .catch(error => next(error))
     
 })
 
@@ -58,10 +58,11 @@ app.delete('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
     console.log(id)
     Person.findByIdAndRemove(id)
-          .then(result => {
-              res.status(204).end()
-          })
-          .catch(error => next(error))
+        .then(result => {
+            console.log(result)
+            res.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 
@@ -70,7 +71,7 @@ app.post('/api/persons', (req, res, next) => {
 
     if(!name || !number) {
         return res.status(400).json({
-            error: "Content missing"
+            error: 'Content missing'
         })
 
     }
@@ -81,8 +82,8 @@ app.post('/api/persons', (req, res, next) => {
     })
     
     person.save()
-    .then(res.json(person))
-    .catch(error => next(error))
+        .then(res.json(person))
+        .catch(error => next(error))
     
 })
 
@@ -95,16 +96,16 @@ app.put('/api/persons/:id', (req, res, next) => {
     }
     
     Person.findByIdAndUpdate(id, person, {new:true})
-          .then(updatedPerson => {
-              res.json(updatedPerson)
-          })
-          .catch(error => next(error))
+        .then(updatedPerson => {
+            res.json(updatedPerson)
+        })
+        .catch(error => next(error))
 })
 
 app.get('/info', (req, res) => {
     const date = new Date(Date.now())
     Person.find({})
-          .then(people => res.send(`<p>Phonebook has info for ${people.length} people</p> <p>${date}</p>`))
+        .then(people => res.send(`<p>Phonebook has info for ${people.length} people</p> <p>${date}</p>`))
     
 })
 
