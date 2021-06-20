@@ -5,10 +5,6 @@ const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
 
-
-
-
-
 // Middleware
 app.use(express.json())
 app.use(morgan('tiny'))
